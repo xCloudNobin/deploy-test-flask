@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ project.name }} — Task Board{% endblock %}
+{% block content %}
+<nav class="crumbs">
+  <a href="{{ url_for('index') }}">All projects</a> &rsaquo; {{ project.name }}
+</nav>
+
+<div class="card-head">
+  <h1>{{ project.name }}</h1>
+  <div class="task-actions">
+    <a href="{{ url_for('project_edit', project_id=project.id) }}">edit project</a>
+    <form method="post" action="{{ url_for('project_delete', project_id=project.id) }}" class="inline"
+          onsubmit="return confirmDelete('this project');">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="link danger">delete project</button>
+    </form>
+  </div>
+</div>
+{% if project.description %}<p>{{ project.description }}</p>{% endif %}
+
+<form class="filter" method="get" action="{{ url_for('project_detail', project_id=project.id) }}">
+  <label>Search
+    <input type="search" name="q" value="{{ q }}" placeholder="title or description">
+  </label>
+  <label>Status
+    <select name="status">
+      <option value="">All statuses</option>
+      {% for value in statuses %}
+        <option value="{{ value }}" {% if value == status %}selected{% endif %}>{{ value }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <button type="submit">Filter</button>
+  {% if q or status %}<a href="{{ url_for('project_detail', project_id=project.id) }}">Clear filters</a>{% endif %}
+</form>
+
+<p><a class="button" href="{{ url_for('task_new') }}?project_id={{ project.id }}">+ New task in this project</a></p>
+
+{% include "_task_list.html" %}
+{% endblock %}

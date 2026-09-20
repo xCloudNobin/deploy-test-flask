@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit project' if project else 'New project' }} — Task Board{% endblock %}
+{% block content %}
+<h1>{{ 'Edit project' if project else 'New project' }}</h1>
+<form method="post" class="stack">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div>
+    <label for="name">Name</label>
+    <input id="name" name="name" required maxlength="120"
+           value="{{ name if name is defined else (project.name if project else '') }}">
+    {% if errors and errors.get('name') %}<p class="error-text">{{ errors['name'] }}</p>{% endif %}
+  </div>
+  <div>
+    <label for="description">Description</label>
+    <textarea id="description" name="description" maxlength="2000"
+              rows="4">{{ description if description is defined else (project.description if project else '') }}</textarea>
+  </div>
+  <div class="row">
+    <button type="submit">Save</button>
+    <a href="{{ url_for('index') }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

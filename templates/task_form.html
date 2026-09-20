@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit task' if task else 'New task' }} — Task Board{% endblock %}
+{% block content %}
+<h1>{{ 'Edit task' if task else 'New task' }}</h1>
+<form method="post" class="stack">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  {% set selected_project_id = selected_project_id if selected_project_id is defined else none %}
+  <div>
+    <label for="title">Title</label>
+    <input id="title" name="title" required maxlength="200"
+           value="{{ title if title is defined else (task.title if task else '') }}">
+    {% if errors and errors.get('title') %}<p class="error-text">{{ errors['title'] }}</p>{% endif %}
+  </div>
+  <div>
+    <label for="description">Description</label>
+    <textarea id="description" name="description" maxlength="4000"
+              rows="5">{{ description if description is defined else (task.description if task else '') }}</textarea>
+  </div>
+  <div class="row">
+    <div>
+      <label for="project_id">Project</label>
+      <select id="project_id" name="project_id">
+        <option value="">None</option>
+        {% for option in projects %}
+          <option value="{{ option.id }}" {% if option.id == selected_project_id %}selected{% endif %}>
+            {{ option.name }}
+          </option>
+        {% endfor %}
+      </select>
+      {% if errors and errors.get('project_id') %}<p class="error-text">{{ errors['project_id'] }}</p>{% endif %}
+    </div>
+    <div>
+      <label for="status">Status</label>
+      <select id="status" name="status">
+        {% for value in statuses %}
+          <option value="{{ value }}" {% if value == (status if status is defined else (task.status if task else '')) %}selected{% endif %}>{{ value }}</option>
+        {% endfor %}
+      </select>
+      {% if errors and errors.get('status') %}<p class="error-text">{{ errors['status'] }}</p>{% endif %}
+    </div>
+  </div>
+  <div class="row">
+    <button type="submit">Save</button>
+    <a href="{{ url_for('index') }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

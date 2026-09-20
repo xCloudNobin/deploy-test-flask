@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Task Board{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="{{ url_for('index') }}">Task Board</a>
+      <nav class="nav">
+        <a href="{{ url_for('project_new') }}">New project</a>
+        <a href="{{ url_for('task_new') }}">New task</a>
+        <a href="{{ url_for('api_tasks_list') }}">API</a>
+        <a href="/health">Health</a>
+        <a href="/ready">Ready</a>
+      </nav>
+    </header>
+    <main class="container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <p class="flash flash-{{ category }}">{{ message }}</p>
+        {% endfor %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="footer">
+      <span>Build marker: <code>{{ build_marker }}</code></span>
+    </footer>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>
