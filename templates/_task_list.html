@@ -1,0 +1,32 @@
+<ul class="tasks">
+  {% for task in tasks %}
+    <li class="task">
+      <div class="task-body">
+        <a class="task-title" href="{{ url_for('task_edit', task_id=task.id) }}">{{ task.title }}</a>
+        {% if task.description %}<p class="muted">{{ task.description }}</p>{% endif %}
+      </div>
+      <div class="task-actions">
+        <form class="status-form" method="post"
+              action="{{ url_for('task_status', task_id=task.id) }}"
+              data-task-status onsubmit="return confirmStatus('{{ task.title }}');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <label class="sr-only" for="status-{{ task.id }}">Status</label>
+          <select name="status" id="status-{{ task.id }}" data-autosubmit>
+            {% for value in statuses %}
+              <option value="{{ value }}" {% if value == task.status %}selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="small hidden-until-js">Set</button>
+        </form>
+        <a href="{{ url_for('task_edit', task_id=task.id) }}">edit</a>
+        <form method="post" action="{{ url_for('task_delete', task_id=task.id) }}" class="inline"
+              onsubmit="return confirmDelete('this task');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="link danger">delete</button>
+        </form>
+      </div>
+    </li>
+  {% else %}
+    <li class="muted">No tasks match the current filters.</li>
+  {% endfor %}
+</ul>

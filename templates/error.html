@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} {{ title }} — Task Board{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>{{ code }} {{ title }}</h1>
+  <p>{{ message }}</p>
+  <p><a href="{{ url_for('index') }}">Back to the board</a></p>
+</div>
+{% endblock %}
